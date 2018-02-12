@@ -67,13 +67,12 @@ static const int64 MIN_RELAY_TX_FEE = 0.000005 *COIN;//改最小限制
 static const int64 MAX_MINT_PROOF_OF_WORK = 999999 * COIN;//最大挖到的利息值
 static const int64 MIN_TXOUT_AMOUNT = 0.000005 *COIN;//改最小限制
 /** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
-static const int COINBASE_MATURITY_PPC = 3;//<zxb>修改挖矿成功需要多少个块确认
-// static const int COINBASE_MATURITY_PPC = -18; //修改挖矿成功需要多少个块确认
+static const int COINBASE_MATURITY_PPC = 500;
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
-static const int STAKE_TARGET_SPACING = 2 * 5;//改为2分钟了 10 * 60; // 10-minute block spacing 
-static const int STAKE_MIN_AGE = 100;//60 * 60 * 24 * 30; // minimum age for coin age<zxb>
+static const int STAKE_TARGET_SPACING = 2 * 60;//改为2分钟了 10 * 60; // 10-minute block spacing 
+static const int STAKE_MIN_AGE = 60 * 60 * 24 * 30; // minimum age for coin age<zxb>
 // static const int STAKE_MAX_AGE = 60 * 60 * 24 * 90; // stake age of full weight
-static const int STAKE_MAX_AGE = 60 * 60 * 24 * 365 * 3; // stake age of full weight 3年 <zxb>
+static const int STAKE_MAX_AGE = 60 * 60 * 24 * 365 * 4; // stake age of full weight 3年 <zxb>
 /** Maximum number of script-checking threads allowed */
 static const int MAX_SCRIPTCHECK_THREADS = 16;
 #ifdef USE_UPNP

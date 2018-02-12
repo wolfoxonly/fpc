@@ -1205,16 +1205,24 @@ void MapPort(bool)
 // Each pair gives a source name and a seed name.
 // The first name is used as information source for addrman.
 // The second name should resolve to a list of seed addresses.
+//zxb默认节点
 static const char *strMainNetDNSSeed[][2] = {
-    {"node1.coingo.vip","47.52.240.153"},
-     {"node2.coingo.vip", "node3.coingo.vip"},
+     {"node1.coingo.vip","flashpaychain3.site"},
+     {"flashpaychain1.site", "flashpaychain2.site"},
+     {"flashpaychain.cn","node1.flashpaychain.vip"},
+     {"node2.flashpaychain.vip", "node3.flashpaychain.vip"},
+     {"node4.flashpaychain.vip","node5.flashpaychain.vip"},
     // {"seed", "seed.ppcoin.net"},
     {NULL, NULL}
 };
 
 static const char *strTestNetDNSSeed[][2] = {
-    {"node1.coingo.vip","47.52.240.153"},
-     {"node2.coingo.vip", "node3.coingo.vip"},
+	{"node1.coingo.vip","flashpaychain3.site"},
+	{"flashpaychain1.site", "flashpaychain2.site"},
+	{"flashpaychain.cn","node1.flashpaychain.vip"},
+	{"node2.flashpaychain.vip", "node3.flashpaychain.vip"},
+	{"node4.flashpaychain.vip","node5.flashpaychain.vip"},
+
     {NULL, NULL}
 };
 

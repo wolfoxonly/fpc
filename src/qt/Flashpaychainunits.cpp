@@ -34,9 +34,9 @@ QString FlashpaychainUnits::name(int unit)
 {
     switch(unit)
     {
-    case BTC: return QString("PPC");
-    case mBTC: return QString("mPPC");
-    case uBTC: return QString::fromUtf8("μPPC");
+    case BTC: return QString("FPC");//zxb定义名字
+    case mBTC: return QString("mFPC");
+    case uBTC: return QString::fromUtf8("μFPC");
     default: return QString("???");
     }
 }
