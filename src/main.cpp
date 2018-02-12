@@ -1235,9 +1235,19 @@ int64 GetProofOfStakeReward(int64 nCoinAge,int64 balance)//<zxb>
     // static int64 nRewardCoinYear = CENT;  // creation amount per coin-year
     // int64 nSubsidy = nCoinAge * 33 / (365 * 33 + 8) * nRewardCoinYear;
     // return nSubsidy;
-    // <zxb>
-    //2分钟一个区块的话，一年是 24 * 60 / 2 * 365
-    int year =  std::ceil(pindexBest->nHeight / (24 * 60 / 2 * 365));
+    // if(balance != 0)
+    // {
+    //     int64 bnCentSecond = nCoinAge * (24 * 60 * 60) * CENT /CENT * COIN / balance;
+
+    //     int days = bnCentSecond / (24 * 60 * 60);
+    //     int year = days / 365;
+    //     if (year <= 1)
+    //     {
+            
+    //     }
+    // }
+    //10分钟一个区块的话，一年是 24 * 60 / 10 * 365
+    int year =  std::ceil(pindexBest->nHeight / (24 * 60 / 10 * 365));
     printf("year ===== %d\n", year);
 
     float rate = 20*pow(0.5,year);
@@ -1318,10 +1328,16 @@ unsigned int static GetNextTargetRequired(const CBlockIndex* pindexLast, bool fP
 
     const CBlockIndex* pindexPrev = GetLastBlockIndex(pindexLast, fProofOfStake);
     if (pindexPrev->pprev == NULL)
+    {
+        // printf(" GetNextTargetRequired first block \n");
         return bnInitialHashTarget.GetCompact(); // first block
+    }
     const CBlockIndex* pindexPrevPrev = GetLastBlockIndex(pindexPrev->pprev, fProofOfStake);
     if (pindexPrevPrev->pprev == NULL)
+    {
+         // printf(" GetNextTargetRequired second block \n");
         return bnInitialHashTarget.GetCompact(); // second block
+    }
 
     int64 nActualSpacing = pindexPrev->GetBlockTime() - pindexPrevPrev->GetBlockTime();
 
@@ -1335,7 +1351,10 @@ unsigned int static GetNextTargetRequired(const CBlockIndex* pindexLast, bool fP
     bnNew /= ((nInterval + 1) * nTargetSpacing);
 
     if (bnNew > bnProofOfWorkLimit)
+    {
+        printf(" GetNextTargetRequired bnProofOfWorkLimit bnProofOfWorkLimit \n");
         bnNew = bnProofOfWorkLimit;
+    }
 
     return bnNew.GetCompact();
 }
@@ -3381,7 +3400,7 @@ bool InitBlockIndex() {
         block.nTime    = 1518409126;// 1345084287;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
       //  block.nNonce   = 2179302059u;
-        block.nNonce = ByteReverse(10400176);
+        block.nNonce = ByteReverse(669026);//<zxb>
         if (fTestNet)
         {
             block.nTime    = 1345090000;
@@ -3401,13 +3420,73 @@ bool InitBlockIndex() {
  #endif
 /////////////////////////////////zxb11111111111111111111111
 
+  //
+         block.nNonce = 0;
+         char pmidstatebuf[32+16]; 
+         char* pmidstate = alignup<16>(pmidstatebuf);
+         char pdatabuf[128+16];   
+         char* pdata     = alignup<16>(pdatabuf);
+         char phash1buf[64+16];   
+        char* phash1    = alignup<16>(phash1buf);
+
+         FormatHashBuffers(&block, pmidstate, pdata, phash1);
+
+         unsigned int& nBlockTime = *(unsigned int*)(pdata + 64 + 4);
+         unsigned int& nBlockNonce = *(unsigned int*)(pdata + 64 + 12);
+
+
+
+         uint256 hashTarget = CBigNum().SetCompact(block.nBits).getuint256();
+         uint256 hashbuf[2];
+         uint256& hashdata = *alignup<16>(hashbuf);
+         while(true)
+         {
+             unsigned int nHashesDone = 0;
+             unsigned int nNonceFound;
+
+             // Crypto++ SHA256
+             nNonceFound = ScanHash_CryptoPP(pmidstate, pdata + 64, phash1,(char*)&hashdata, nHashesDone);
+
+             // Check if something found
+             if (nNonceFound != (unsigned int) -1)
+             {
+                 for (unsigned int i = 0; i < sizeof(hashdata)/4; i++)
+                     ((unsigned int*)&hashdata)[i] = ByteReverse(((unsigned int*)&hashdata)[i]);
+
+                 if (hashdata <= hashTarget)
+                 {
+                     // Found a solution
+                      printf("Found a solution ooooooooooooooooooooooookkkkk \n" );
+                      printf("block.nNonce 11111111111111 zxb:%d \n" ,block.nNonce);
+                       printf("nNonceFound 11111111111111 zxb:%d \n" ,nNonceFound);
+                      block.nNonce = ByteReverse(nNonceFound);
+                      printf("block.nNonce 22222222 zxb:%d \n" ,block.nNonce);
+                       printf("hashdata 33333 zxb:%s\n", hashdata.ToString().c_str());
+                      printf("GetHash 44444 zxb:%s\n" ,block.GetHash().ToString().c_str());
+                   
+                   
+                   
+                     break;
+                 }
+             }
+         }
+
+        //////////////////////////zxbend/////////////////////////
+
+
+
+
+
+
+
+ printf("block.nNonce 11111111111111 zxb:%d \n" ,block.nNonce);
         //// debug print
         uint256 hash = block.GetHash();
         printf("block hash %s\n", hash.ToString().c_str());
-        printf("hashGenesisBlock %s\n", hashGenesisBlock.ToString().c_str());
+        printf("hashGenesisBlock_offical %s\n", hashGenesisBlock.ToString().c_str());
         printf("hashMerkleRoot %s\n", block.hashMerkleRoot.ToString().c_str());
         printf("block.nBits 2222222222222222222 zxb:%d \n" ,block.nBits);
-       // assert(block.hashMerkleRoot == uint256("0x3c2d8f85fab4d17aac558cc648a1a58acff0de6deb890c29985690052c5993c2"));
+        assert(block.hashMerkleRoot == uint256("e0c17499a2088feaf700d2ff1362491f95c5b03f01e3374ddb9910a38a1cff6c"));
        // assert(block.hashMerkleRoot == uint256("0xece2718fca52c7c1c233fb9add9a7a4866794d8043fe75af407a9c59fa56cc79"));
         block.print();
         //assert(hash == hashGenesisBlock);
@@ -5267,8 +5346,7 @@ void FlashpaychainMiner(CWallet *pwallet, bool fProofOfStake)
 {
     printf("CPUMiner started for proof-of-%s\n", fProofOfStake? "stake" : "work");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
-    RenameThread(fProofOfStake? "ppcoin-stake-minter" : "ppcoin-miner");
-
+    RenameThread(fProofOfStake? "fpc-stake-minter" : "fpc-miner");
     // Each thread has its own key and counter
     CReserveKey reservekey(pwallet);
     unsigned int nExtraNonce = 0;
