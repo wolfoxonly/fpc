@@ -1,0 +1,7 @@
+[main]
+host = https://www.transifex.com
+
+[Flashpaychain.qt-translation-014x]
+file_filter = src/qt/locale/Flashpaychain_<lang>.ts
+source_file = src/qt/locale/Flashpaychain_en.ts
+source_lang = en

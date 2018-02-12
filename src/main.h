@@ -62,16 +62,16 @@ static const unsigned int MEMPOOL_HEIGHT = 0x7FFFFFFF;
 // static const int64 MAX_MONEY = 2000000000 * COIN;<zxb>
 static const int64 MAX_MONEY = 145646327.8 * COIN;
 inline bool MoneyRange(int64 nValue) { return (nValue >= 0 && nValue <= MAX_MONEY); }
-static const int64 MIN_TX_FEE = CENT;
-static const int64 MIN_RELAY_TX_FEE = CENT;
-static const int64 MAX_MINT_PROOF_OF_WORK = 9999 * COIN;
-static const int64 MIN_TXOUT_AMOUNT = MIN_TX_FEE;
+static const int64 MIN_TX_FEE = 0.000005 *COIN;//zxb改最小转账限制
+static const int64 MIN_RELAY_TX_FEE = 0.000005 *COIN;//改最小限制
+static const int64 MAX_MINT_PROOF_OF_WORK = 999999 * COIN;//最大挖到的利息值
+static const int64 MIN_TXOUT_AMOUNT = 0.000005 *COIN;//改最小限制
 /** Coinbase transaction outputs can only be spent after this number of new blocks (network rule) */
-static const int COINBASE_MATURITY_PPC = 5;//<zxb>修改挖矿成功需要多少个块确认
+static const int COINBASE_MATURITY_PPC = 3;//<zxb>修改挖矿成功需要多少个块确认
 // static const int COINBASE_MATURITY_PPC = -18; //修改挖矿成功需要多少个块确认
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
-static const int STAKE_TARGET_SPACING = 2* 5;//改为2分钟了 10 * 60; // 10-minute block spacing 
-static const int STAKE_MIN_AGE = 60;//60 * 60 * 24 * 30; // minimum age for coin age<zxb>
+static const int STAKE_TARGET_SPACING = 2 * 5;//改为2分钟了 10 * 60; // 10-minute block spacing 
+static const int STAKE_MIN_AGE = 100;//60 * 60 * 24 * 30; // minimum age for coin age<zxb>
 // static const int STAKE_MAX_AGE = 60 * 60 * 24 * 90; // stake age of full weight
 static const int STAKE_MAX_AGE = 60 * 60 * 24 * 365 * 3; // stake age of full weight 3年 <zxb>
 /** Maximum number of script-checking threads allowed */
@@ -83,7 +83,7 @@ static const int fHaveUPnP = false;
 #endif
 
 //static const uint256 hashGenesisBlockOfficial("0x0000000032fe677166d54963b62a4677d8957e87c508eaa4fd7eb1c880cd27e3");
-static const uint256 hashGenesisBlockOfficial("000000ce29579df2597745a492b0d1034e0f5b8fba4a8edc37f6544ef6093394");
+static const uint256 hashGenesisBlockOfficial("0x000000d611bf7afe3b267e0289123471aca98042004d997f3035e024499ce61a");
 static const uint256 hashGenesisBlockTestNet("0x00000001f757bb737f6596503e17cd17b0658ce630cc727c0cca81aec47c9f06");
 
 static const int64 nMaxClockDrift = 2 * 60 * 60;        // two hours

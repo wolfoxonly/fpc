@@ -1511,7 +1511,7 @@ std::string FormatSubVersion(const std::string& name, int nClientVersion, const 
     if (!comments.empty())
         ss << "(" << boost::algorithm::join(comments, "; ") << ")";
     ss << "/";
-    ss << "Flashpaychain:" << FormatVersion(PEERCOIN_VERSION);
+    ss << "Flashpaychain:" << FormatVersion(FLASHPAYCHAIN_VERSION);
     ss << "(" << CLIENT_BUILD << ")/";
     return ss.str();
 }

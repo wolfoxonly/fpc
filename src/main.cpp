@@ -685,7 +685,7 @@ bool CTransaction::CheckTransaction(CValidationState &state) const
         // ppcoin: enforce minimum output amount
         // v0.5 protocol: zero amount allowed
         if ((!txout.IsEmpty()) && txout.nValue < MIN_TXOUT_AMOUNT &&
-            !(IsProtocolV05(nTime) && (txout.nValue == 0)))
+            !(IsProtocolV05(nTime) && (txout.nValue == 0)))//pow无奖励此处报错
             return state.DoS(100, error("CTransaction::CheckTransaction() : txout.nValue below minimum"));
         if (txout.nValue > MAX_MONEY)
             return state.DoS(100, error("CTransaction::CheckTransaction() : txout.nValue too high"));
@@ -1198,7 +1198,7 @@ uint256 static GetOrphanRoot(const CBlockHeader* pblock)
 
 int64 GetProofOfWorkReward(unsigned int nBits)
 {
-    return 0 *COIN;/////POW先改成奖励0.1<zxb>
+    return 0.00001 *COIN;/////POW先改成奖励0.1<zxb>
     CBigNum bnSubsidyLimit = MAX_MINT_PROOF_OF_WORK;
     CBigNum bnTarget;
     bnTarget.SetCompact(nBits);
@@ -1247,10 +1247,10 @@ int64 GetProofOfStakeReward(int64 nCoinAge,int64 balance)//<zxb>
     //     }
     // }
     //10分钟一个区块的话，一年是 24 * 60 / 10 * 365
-    int year =  std::ceil(pindexBest->nHeight / (24 * 60 / 10 * 365));
+    int year =  std::ceil(pindexBest->nHeight / (24 * 60 / 10 * 365));//zxb利率衰减部分
     printf("year ===== %d\n", year);
 
-    float rate = 20*pow(0.5,year);
+    float rate = 20*pow(0.5,year);//zxb
     printf("rate ===== %f\n", rate);
     int64 nSubsidy = ((rate / 100) * nCoinAge / 365) * COIN;
 
@@ -3387,7 +3387,7 @@ bool InitBlockIndex() {
         // Genesis block
         const char* pszTimestamp = "The Times 21/1/2018 zxb fpc genesis";// "Matonis 07-AUG-2012 Parallel Currencies And The Roadmap To Monetary Freedom";
         CTransaction txNew;
-        txNew.nTime = 1518409126;//1516498115;//1345083810;
+        txNew.nTime = 1518446931;//1516498115;//1345083810;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 486604799 << CBigNum(9999) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
@@ -3397,7 +3397,7 @@ bool InitBlockIndex() {
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
-        block.nTime    = 1518409126;// 1345084287;
+        block.nTime    = 1518446931;// 1345084287;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
       //  block.nNonce   = 2179302059u;
         block.nNonce = ByteReverse(669026);//<zxb>
@@ -3486,7 +3486,7 @@ bool InitBlockIndex() {
         printf("hashGenesisBlock_offical %s\n", hashGenesisBlock.ToString().c_str());
         printf("hashMerkleRoot %s\n", block.hashMerkleRoot.ToString().c_str());
         printf("block.nBits 2222222222222222222 zxb:%d \n" ,block.nBits);
-        assert(block.hashMerkleRoot == uint256("e0c17499a2088feaf700d2ff1362491f95c5b03f01e3374ddb9910a38a1cff6c"));
+        assert(block.hashMerkleRoot == uint256("ebdcf782fb0eb443f4de05eaae8da2c101624e9996844ca8bcf4a8fa8af1cd31"));
        // assert(block.hashMerkleRoot == uint256("0xece2718fca52c7c1c233fb9add9a7a4866794d8043fe75af407a9c59fa56cc79"));
         block.print();
         //assert(hash == hashGenesisBlock);
@@ -5197,7 +5197,7 @@ CBlockTemplate* CreateNewBlock(CReserveKey& reservekey, CWallet* pwallet, bool f
           
            if(pindexPrev->nHeight == 0)
            {
-                pblock->vtx[0].vout[0].nValue = 400000000 * COIN;//首块产量<zxb>
+                pblock->vtx[0].vout[0].nValue = 100000000 * COIN;//首块产量<zxb>
            }
            else
            {

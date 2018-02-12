@@ -57,10 +57,10 @@ endif
 # test_Flashpaychain binary #
 test_test_Flashpaychain_CPPFLAGS = $(AM_CPPFLAGS) $(TESTDEFS) \
   -DTEST_DATA_DIR=$(TEST_DATA_DIR)
-test_test_Flashpaychain_LDADD = $(LIBPEERCOIN_SERVER) $(LIBPEERCOIN_CLI) $(LIBPEERCOIN_COMMON) $(LIBLEVELDB) $(LIBMEMENV) \
+test_test_Flashpaychain_LDADD = $(LIBFLASHPAYCHAIN_SERVER) $(LIBFLASHPAYCHAIN_CLI) $(LIBFLASHPAYCHAIN_COMMON) $(LIBLEVELDB) $(LIBMEMENV) \
   $(BOOST_LIBS) $(BOOST_UNIT_TEST_FRAMEWORK_LIB)
 if ENABLE_WALLET
-test_test_Flashpaychain_LDADD += $(LIBPEERCOIN_WALLET)
+test_test_Flashpaychain_LDADD += $(LIBFLASHPAYCHAIN_WALLET)
 endif
 test_test_Flashpaychain_LDADD += $(BDB_LIBS)
 test_test_Flashpaychain_LDFLAGS = $(AM_LDFLAGS)

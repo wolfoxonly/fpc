@@ -19,21 +19,21 @@ endif
 BITCOIN_CONFIG_INCLUDES=-I$(builddir)/config
 BITCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BDB_CPPFLAGS) $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
 
-LIBPEERCOIN_SERVER=libFlashpaychain_server.a
-LIBPEERCOIN_COMMON=libFlashpaychain_common.a
-LIBPEERCOIN_CLI=libFlashpaychain_cli.a
-LIBPEERCOINQT=qt/libFlashpaychainqt.a
+LIBFLASHPAYCHAIN_SERVER=libFlashpaychain_server.a
+LIBFLASHPAYCHAIN_COMMON=libFlashpaychain_common.a
+LIBFLASHPAYCHAIN_CLI=libFlashpaychain_cli.a
+LIBFLASHPAYCHAINQT=qt/libFlashpaychainqt.a
 if ENABLE_WALLET
-LIBPEERCOIN_WALLET=libFlashpaychain_wallet.a
+LIBFLASHPAYCHAIN_WALLET=libFlashpaychain_wallet.a
 endif
 
 # Make is not made aware of per-object dependencies to avoid limiting building parallelization
 # But to build the less dependent modules first, we manually select their order here:
 EXTRA_LIBRARIES += \
-  $(LIBPEERCOIN_COMMON) \
-  $(LIBPEERCOIN_SERVER) \
-  $(LIBPEERCOIN_CLI) \
-  $(LIBPEERCOIN_WALLET) 
+  $(LIBFLASHPAYCHAIN_COMMON) \
+  $(LIBFLASHPAYCHAIN_SERVER) \
+  $(LIBFLASHPAYCHAIN_CLI) \
+  $(LIBFLASHPAYCHAIN_WALLET) 
 
 bin_PROGRAMS =
 noinst_LIBRARIES = 
@@ -188,10 +188,10 @@ Flashpaychaind_SOURCES += Flashpaychaind-res.rc
 endif
 
 Flashpaychaind_LDADD = \
-  $(LIBPEERCOIN_SERVER) \
-  $(LIBPEERCOIN_COMMON) \
-  $(LIBPEERCOIN_WALLET) \
-  $(LIBPEERCOIN_CLI) \
+  $(LIBFLASHPAYCHAIN_SERVER) \
+  $(LIBFLASHPAYCHAIN_COMMON) \
+  $(LIBFLASHPAYCHAIN_WALLET) \
+  $(LIBFLASHPAYCHAIN_CLI) \
   $(LIBLEVELDB) \
   $(LIBMEMENV) 
 
@@ -208,8 +208,8 @@ Flashpaychain_cli_SOURCES += Flashpaychain-cli-res.rc
 endif
 
 Flashpaychain_cli_LDADD = \
-  $(LIBPEERCOIN_CLI) \
-  $(LIBPEERCOIN_COMMON)
+  $(LIBFLASHPAYCHAIN_CLI) \
+  $(LIBFLASHPAYCHAIN_COMMON)
 
 Flashpaychain_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 

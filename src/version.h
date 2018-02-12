@@ -22,11 +22,11 @@ extern const std::string CLIENT_NAME;
 extern const std::string CLIENT_BUILD;
 extern const std::string CLIENT_DATE;
 
-static const int PEERCOIN_VERSION =
-                           1000000 * PEERCOIN_VERSION_MAJOR
-                         +   10000 * PEERCOIN_VERSION_MINOR
-                         +     100 * PEERCOIN_VERSION_REVISION
-                         +       1 * PEERCOIN_VERSION_BUILD;
+static const int FLASHPAYCHAIN_VERSION =
+                           1000000 * FLASHPAYCHAIN_VERSION_MAJOR
+                         +   10000 * FLASHPAYCHAIN_VERSION_MINOR
+                         +     100 * FLASHPAYCHAIN_VERSION_REVISION
+                         +       1 * FLASHPAYCHAIN_VERSION_BUILD;
 
 //
 // network protocol versioning
