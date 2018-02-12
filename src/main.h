@@ -71,7 +71,7 @@ static const int COINBASE_MATURITY_PPC = 5;//<zxb>修改挖矿成功需要多少
 // static const int COINBASE_MATURITY_PPC = -18; //修改挖矿成功需要多少个块确认
 /** Threshold for nLockTime: below this value it is interpreted as block number, otherwise as UNIX timestamp. */
 static const int STAKE_TARGET_SPACING = 2* 5;//改为2分钟了 10 * 60; // 10-minute block spacing 
-static const int STAKE_MIN_AGE = 60 * 60 * 24 * 30; // minimum age for coin age
+static const int STAKE_MIN_AGE = 60;//60 * 60 * 24 * 30; // minimum age for coin age<zxb>
 // static const int STAKE_MAX_AGE = 60 * 60 * 24 * 90; // stake age of full weight
 static const int STAKE_MAX_AGE = 60 * 60 * 24 * 365 * 3; // stake age of full weight 3年 <zxb>
 /** Maximum number of script-checking threads allowed */

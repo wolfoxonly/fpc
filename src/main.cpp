@@ -1198,7 +1198,7 @@ uint256 static GetOrphanRoot(const CBlockHeader* pblock)
 
 int64 GetProofOfWorkReward(unsigned int nBits)
 {
-    return 0.1*COIN;/////POW先改成奖励0.1<zxb>
+    return 0 *COIN;/////POW先改成奖励0.1<zxb>
     CBigNum bnSubsidyLimit = MAX_MINT_PROOF_OF_WORK;
     CBigNum bnTarget;
     bnTarget.SetCompact(nBits);
@@ -3368,7 +3368,7 @@ bool InitBlockIndex() {
         // Genesis block
         const char* pszTimestamp = "The Times 21/1/2018 zxb fpc genesis";// "Matonis 07-AUG-2012 Parallel Currencies And The Roadmap To Monetary Freedom";
         CTransaction txNew;
-        txNew.nTime = 1516498355;//1516498115;//1345083810;
+        txNew.nTime = 1518409126;//1516498115;//1345083810;
         txNew.vin.resize(1);
         txNew.vout.resize(1);
         txNew.vin[0].scriptSig = CScript() << 486604799 << CBigNum(9999) << vector<unsigned char>((const unsigned char*)pszTimestamp, (const unsigned char*)pszTimestamp + strlen(pszTimestamp));
@@ -3378,7 +3378,7 @@ bool InitBlockIndex() {
         block.hashPrevBlock = 0;
         block.hashMerkleRoot = block.BuildMerkleTree();
         block.nVersion = 1;
-        block.nTime    = 1516498355;// 1345084287;
+        block.nTime    = 1518409126;// 1345084287;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
       //  block.nNonce   = 2179302059u;
         block.nNonce = ByteReverse(10400176);
@@ -5340,8 +5340,8 @@ void FlashpaychainMiner(CWallet *pwallet, bool fProofOfStake)
         printf("Running FlashpaychainMiner with %" PRIszu" transactions in block (%u bytes)\n", pblock->vtx.size(),
                ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 
-        if (pindexPrev->nHeight > 1000 )
-        {//大于1000不让用pow了<ZXB>
+        if (pindexPrev->nHeight > 100000000 )
+        {//大于100000000不让用pow了<ZXB>
             printf("block height >1000 is not pow Minner is not use\n");
             return;
         }

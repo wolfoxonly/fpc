@@ -2,6 +2,10 @@
 Flashpaychain Official Development Repo
 ==================================
 
+
+
+
+
 ### What is Flashpaychain?
 [Flashpaychain](https://Flashpaychain.net) (abbreviated PPC), also known as PPCoin and Peer-to-Peer Coin is the first [cryptocurrency](https://en.wikipedia.org/wiki/Cryptocurrency) design introducing [proof-of-stake consensus](https://Flashpaychain.net/assets/paper/Flashpaychain-paper.pdf) as a security model, with a combined [proof-of-stake](https://Flashpaychain.net/assets/paper/Flashpaychain-paper.pdf)/[proof-of-work](https://en.wikipedia.org/wiki/Proof-of-work_system) minting system. Flashpaychain is based on [Flashpaychain](https://Flashpaychain.org), while introducing many important innovations to cryptocurrency field including new security model, energy efficiency, better minting model and more adaptive response to rapid change in network computation power.
 
