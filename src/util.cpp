@@ -246,6 +246,10 @@ static void DebugPrintInit()
 
 int OutputDebugStringF(const char* pszFormat, ...)
 {
+return 1;
+}
+/*
+{
     int ret = 0; // Returns total number of characters written
     if (fPrintToConsole)
     {
@@ -286,6 +290,7 @@ int OutputDebugStringF(const char* pszFormat, ...)
         ret += vfprintf(fileout, pszFormat, arg_ptr);
         va_end(arg_ptr);
     }
+	
 
 #ifdef WIN32
     if (fPrintToDebugger)
@@ -315,6 +320,8 @@ int OutputDebugStringF(const char* pszFormat, ...)
 #endif
     return ret;
 }
+*///关闭logo
+
 
 string vstrprintf(const char *format, va_list ap)
 {

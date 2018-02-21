@@ -1247,7 +1247,7 @@ int64 GetProofOfStakeReward(int64 nCoinAge,int64 balance)//<zxb>
     //     }
     // }
     //10分钟一个区块的话，一年是 24 * 60 / 10 * 365
-    int year =  std::ceil(pindexBest->nHeight / (24 * 60 / 10 * 365));//zxb利率衰减部分
+    int year =  std::ceil(pindexBest->nHeight / (24 * 60 / 2 * 365));//zxb fpc利率衰减部分
     printf("year ===== %d\n", year);
 
     float rate = 20*pow(0.5,year);//zxb
@@ -3400,7 +3400,7 @@ bool InitBlockIndex() {
         block.nTime    = 1518446931;// 1345084287;
         block.nBits    = bnProofOfWorkLimit.GetCompact();
       //  block.nNonce   = 2179302059u;
-        block.nNonce = ByteReverse(669026);//<zxb>
+        block.nNonce = ByteReverse(8818506);//<zxb>fpc
         if (fTestNet)
         {
             block.nTime    = 1345090000;
