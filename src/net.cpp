@@ -35,7 +35,8 @@
 using namespace std;
 using namespace boost;
 
-static const int MAX_OUTBOUND_CONNECTIONS = 8;
+
+static const int MAX_OUTBOUND_CONNECTIONS = 32;//<zxb>ljn
 
 bool OpenNetworkConnection(const CAddress& addrConnect, CSemaphoreGrant *grantOutbound = NULL, const char *strDest = NULL, bool fOneShot = false);
 
@@ -316,27 +317,23 @@ bool GetMyExternalIP2(const CService& addrConnect, const char* pszGet, const cha
     {
         if (strLine.empty()) // HTTP response is separated from headers by blank line
         {
+            std::string strHttpBody = "";
             loop
             {
                 if (!RecvLine(hSocket, strLine))
                 {
-                    CloseSocket(hSocket);
-                    return false;
-                }
-                if (pszKeyword == NULL)
-                    break;
-                if (strLine.find(pszKeyword) != string::npos)
-                {
-                    strLine = strLine.substr(strLine.find(pszKeyword) + strlen(pszKeyword));
                     break;
                 }
+                strHttpBody += strLine;
             }
             CloseSocket(hSocket);
-            if (strLine.find("<") != string::npos)
-                strLine = strLine.substr(0, strLine.find("<"));
-            strLine = strLine.substr(strspn(strLine.c_str(), " \t\n\r"));
-            while (strLine.size() > 0 && isspace(strLine[strLine.size()-1]))
-                strLine.resize(strLine.size()-1);
+
+            if (pszKeyword == NULL) break;
+            if (strHttpBody.find(pszKeyword) != string::npos)
+            {
+                strHttpBody= strHttpBody.substr(strHttpBody.find(pszKeyword) + strlen(pszKeyword));
+                if (strHttpBody.find("<")) strLine = strHttpBody.substr(0,strHttpBody.find("<"));
+            }
             CService addr(strLine,0,true);
             printf("GetMyExternalIP() received [%s] %s\n", strLine.c_str(), addr.ToString().c_str());
             if (!addr.IsValid() || !addr.IsRoutable())
@@ -354,56 +351,27 @@ bool GetMyExternalIP(CNetAddr& ipRet)
     CService addrConnect;
     const char* pszGet;
     const char* pszKeyword;
+	bool r;
 
-    for (int nLookup = 0; nLookup <= 1; nLookup++)
-    for (int nHost = 1; nHost <= 2; nHost++)
-    {
-        // We should be phasing out our use of sites like these. If we need
-        // replacements, we should ask for volunteers to put this simple
-        // php file on their web server that prints the client IP:
-        //  <?php echo $_SERVER["REMOTE_ADDR"]; ?>
-        if (nHost == 1)
-        {
-            addrConnect = CService("91.198.22.70", 80); // checkip.dyndns.org
-
-            if (nLookup == 1)
-            {
-                CService addrIP("checkip.dyndns.org", 80, true);
-                if (addrIP.IsValid())
-                    addrConnect = addrIP;
-            }
-
-            pszGet = "GET / HTTP/1.1\r\n"
-                     "Host: checkip.dyndns.org\r\n"
-                     "User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)\r\n"
-                     "Connection: close\r\n"
-                     "\r\n";
-
-            pszKeyword = "Address:";
-        }
-        else if (nHost == 2)
-        {
-            addrConnect = CService("74.208.43.192", 80); // www.showmyip.com
-
-            if (nLookup == 1)
-            {
-                CService addrIP("www.showmyip.com", 80, true);
-                if (addrIP.IsValid())
-                    addrConnect = addrIP;
-            }
-
-            pszGet = "GET /simple/ HTTP/1.1\r\n"
-                     "Host: www.showmyip.com\r\n"
-                     "User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)\r\n"
-                     "Connection: close\r\n"
-                     "\r\n";
-
-            pszKeyword = NULL; // Returns just IP address
-        }
-
-        if (GetMyExternalIP2(addrConnect, pszGet, pszKeyword, ipRet))
-            return true;
+    // We should be phasing out our use of sites like these. If we need
+    // replacements, we should ask for volunteers to put this simple
+    // php file on their web server that prints the client IP:
+    //  <?php echo $_SERVER["REMOTE_ADDR"]; ?>
+    CService addrIP("myip.cx", 80, true);
+    if (addrIP.IsValid()) {
+         addrConnect = addrIP;
     }
+
+    pszGet = "GET /ip.php HTTP/1.1\r\n"
+             "Host: myip.cx\r\n"
+             "User-Agent: Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)\r\n"
+             "Connection: close\r\n"
+             "\r\n";
+
+    pszKeyword = "<div align=\"center\"><span>";
+
+    if (GetMyExternalIP2(addrConnect, pszGet, pszKeyword, ipRet))
+        return true;
 
     return false;
 }
@@ -480,7 +448,7 @@ CNode* ConnectNode(CAddress addrConnect, const char *pszDest)
 
 
     /// debug print
-    printf("trying connection %s lastseen=%.1fhrs\n",
+    printf("trying connection %s lastseen=%.1fhrs\n",//zxb,ljn校验节点
         pszDest ? pszDest : addrConnect.ToString().c_str(),
         pszDest ? 0 : (double)(GetAdjustedTime() - addrConnect.nTime)/3600.0);
 
@@ -1207,25 +1175,46 @@ void MapPort(bool)
 // The second name should resolve to a list of seed addresses.
 //zxb默认节点
 static const char *strMainNetDNSSeed[][2] = {
-     {"node1.coingo.vip","flashpaychain3.site"},
-     {"flashpaychain1.site", "flashpaychain2.site"},
-     {"flashpaychain.cn","node1.flashpaychain.vip"},
-     {"node2.flashpaychain.vip", "node3.flashpaychain.vip"},
-     {"node4.flashpaychain.vip","node5.flashpaychain.vip"},
+     {"node1.coingo.vip","node1.coingo.vip"},
+     {"flashpaychain1.site", "flashpaychain1.site"},
+     {"flashpaychain.cn","flashpaychain.cn"},
+     {"node2.flashpaychain.vip", "node2.flashpaychain.vip"},
+     {"node4.flashpaychain.vip","node4.flashpaychain.vip"},
+     {"flashpaychain3.site","flashpaychain3.site"},
+     {"flashpaychain2.site", "flashpaychain2.site"},
+     {"node1.flashpaychain.vip","node1.flashpaychain.vip"},
+     {"node3.flashpaychain.vip", "node3.flashpaychain.vip"},
+     {"node5.flashpaychain.vip","node5.flashpaychain.vip"},
     // {"seed", "seed.ppcoin.net"},
     {NULL, NULL}
 };
 
 static const char *strTestNetDNSSeed[][2] = {
-	{"node1.coingo.vip","flashpaychain3.site"},
-	{"flashpaychain1.site", "flashpaychain2.site"},
-	{"flashpaychain.cn","node1.flashpaychain.vip"},
-	{"node2.flashpaychain.vip", "node3.flashpaychain.vip"},
-	{"node4.flashpaychain.vip","node5.flashpaychain.vip"},
+     {"node1.coingo.vip","node1.coingo.vip"},
+     {"flashpaychain1.site", "flashpaychain1.site"},
+     {"flashpaychain.cn","flashpaychain.cn"},
+     {"node2.flashpaychain.vip", "node2.flashpaychain.vip"},
+     {"node4.flashpaychain.vip","node4.flashpaychain.vip"},
+     {"flashpaychain3.site","flashpaychain3.site"},
+     {"flashpaychain2.site", "flashpaychain2.site"},
+     {"node1.flashpaychain.vip","node1.flashpaychain.vip"},
+     {"node3.flashpaychain.vip", "node3.flashpaychain.vip"},
+     {"node5.flashpaychain.vip","node5.flashpaychain.vip"},
+
 
     {NULL, NULL}
 };
 
+void DumpAddresses()
+{
+    int64 nStart = GetTimeMillis();
+
+    CAddrDB adb;
+    adb.Write(addrman);
+
+    printf("Flushed %d addresses to peers.dat  %" PRI64d"ms\n",
+           addrman.size(), GetTimeMillis() - nStart);
+}
 void ThreadDNSAddressSeed()
 {
     static const char *(*strDNSSeed)[2] = fTestNet ? strTestNetDNSSeed : strMainNetDNSSeed;
@@ -1247,7 +1236,9 @@ void ThreadDNSAddressSeed()
                     int nOneDay = 24*3600;
                     CAddress addr = CAddress(CService(ip, GetDefaultPort()));
                     addr.nTime = GetTime() - 3*nOneDay - GetRand(4*nOneDay); // use a random age between 3 and 7 days old
-                    vAdd.push_back(addr);
+                     printf("vAdd.push_back:");
+                     printf("%s\n", addr.ToString().c_str());
+					vAdd.push_back(addr);
                     found++;
                 }
             }
@@ -1256,6 +1247,7 @@ void ThreadDNSAddressSeed()
     }
 
     printf("%d addresses found from DNS seeds\n", found);
+    DumpAddresses();
 }
 
 
@@ -1272,21 +1264,35 @@ void ThreadDNSAddressSeed()
 // Physical IP seeds: 32-bit IPv4 addresses: e.g. 178.33.22.32 = 0x201621b2
 unsigned int pnSeed[] =
 {
-    0x36a3b545, 0x3c1c26d8, 0x4031eb6d, 0x4d3463d1, 0x586a6854, 0x5da9ae65,
-    0x6deb7318, 0x9083fb63, 0x961bf618, 0xcabd2e4e, 0xcb766dd5, 0xdd514518,
-    0xdff010b8, 0xe9bb6044, 0xedb24a4c,
-};
+/*
+    0x36a3b545, 
+    0x3c1c26d8, 
+    0x4031eb6d, 
+    0x4d3463d1, 
+    0x586a6854, 
+    0x5da9ae65,
+    0x6deb7318, 
+    0x9083fb63, 
+    0x961bf618, 
+    0xcabd2e4e, 
+    0xcb766dd5, 
+    0xdd514518,
+    0xdff010b8, 
+    0xe9bb6044, 
+    0xedb24a4c,
+*/
+/*
+        0xAD5A6827,
+        0x33284D78,
+        0x59746827,
+        0x7F686827,
+        0x59D05B2F,
+        0x2FDF5B2F,
+        0xCBD45B2F,
+        0xFAE5342F,
+*/};
 
-void DumpAddresses()
-{
-    int64 nStart = GetTimeMillis();
 
-    CAddrDB adb;
-    adb.Write(addrman);
-
-    printf("Flushed %d addresses to peers.dat  %" PRI64d"ms\n",
-           addrman.size(), GetTimeMillis() - nStart);
-}
 
 void static ProcessOneShot()
 {
@@ -1382,11 +1388,15 @@ void ThreadOpenConnections()
         int nTries = 0;
         loop
         {
+            DumpAddresses();
             // use an nUnkBias between 10 (no outgoing connections) and 90 (8 outgoing connections)
             CAddress addr = addrman.Select(10 + min(nOutbound,8)*10);
 
             // if we selected an invalid address, restart
-            if (!addr.IsValid() || setConnected.count(addr.GetGroup()) || IsLocal(addr))
+            if (!addr.IsValid()
+                // Harry: Policy: one address per group
+                //|| setConnected.count(addr.GetGroup())
+                || IsLocal(addr))
                 break;
 
             // If we didn't find an appropriate destination after trying 100 addresses fetched from addrman,
