@@ -343,10 +343,11 @@ bool GetMyExternalIP2(const CService& addrConnect, const char* pszGet, const cha
         }
     }
     CloseSocket(hSocket);
+	
     return error("GetMyExternalIP() : connection closed");
 }
 
-bool GetMyExternalIP(CNetAddr& ipRet)
+bool GetMyExternalIP(CNetAddr& ipRet)//<zxb>
 {
     CService addrConnect;
     const char* pszGet;
@@ -1175,16 +1176,17 @@ void MapPort(bool)
 // The second name should resolve to a list of seed addresses.
 //zxb默认节点
 static const char *strMainNetDNSSeed[][2] = {
-     {"node1.coingo.vip","node1.coingo.vip"},
-     {"flashpaychain1.site", "flashpaychain1.site"},
-     {"flashpaychain.cn","flashpaychain.cn"},
-     {"node2.flashpaychain.vip", "node2.flashpaychain.vip"},
-     {"node4.flashpaychain.vip","node4.flashpaychain.vip"},
-     {"flashpaychain3.site","flashpaychain3.site"},
-     {"flashpaychain2.site", "flashpaychain2.site"},
-     {"node1.flashpaychain.vip","node1.flashpaychain.vip"},
-     {"node3.flashpaychain.vip", "node3.flashpaychain.vip"},
-     {"node5.flashpaychain.vip","node5.flashpaychain.vip"},
+     {"node1.fpchainchina.info","160.19.49.38"},
+     {"node2.fpchainchina.info", "160.19.50.247"},
+     {"node3.fpchainchina.info","103.71.239.30"},
+     {"node4.fpchainchina.info", "47.75.34.121"},
+     {"node1.fpchainhk.cloud","160.19.49.38"},
+     {"node2.fpchainhk.cloud", "160.19.50.247"},
+     {"node3.fpchainhk.cloud","103.71.239.30"},
+     {"node4.fpchainhk.cloud", "47.75.34.121"},
+     {"node1.fpchainusa.live","160.19.49.38"},
+     {"node2.fpchainusa.live", "160.19.50.247"},
+
     // {"seed", "seed.ppcoin.net"},
     {NULL, NULL}
 };
